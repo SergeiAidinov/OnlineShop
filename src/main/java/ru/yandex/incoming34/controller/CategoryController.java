@@ -1,16 +1,12 @@
 package ru.yandex.incoming34.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.incoming34.dto.CategoryBriefDto;
 import ru.yandex.incoming34.entities.category.CategoryBrief;
 import ru.yandex.incoming34.entities.category.CategoryFull;
 import ru.yandex.incoming34.service.CategoryService;
 
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.annotation.WebFilter;
 import java.util.ArrayList;
 import java.util.List;
 
