@@ -35,7 +35,8 @@ public class CartService {
 
 
     public void removeProduct(Long id) {
-        cart.removeProduct(id);
+        if (productBriefRepo.findById(id).isPresent());
+        cart.removeProduct(productBriefRepo.findById(id).get());
     }
 
     public void clearCart() {

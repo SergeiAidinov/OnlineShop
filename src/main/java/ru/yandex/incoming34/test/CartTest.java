@@ -2,7 +2,6 @@ package ru.yandex.incoming34.test;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import liquibase.repackaged.org.apache.commons.collections4.CollectionUtils;
 import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,11 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 import ru.yandex.incoming34.components.Cart;
 import ru.yandex.incoming34.entities.product.ProductBrief;
 import ru.yandex.incoming34.repo.ProductBriefRepo;
@@ -24,20 +24,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Component
+//@Configuration
+//@PropertySource(value = "classpath:SpringHomeWork3.properties")
+//@SpringBootTest
+@ComponentScan(basePackageClasses = {Cart.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-class CartTest {
+public class CartTest {
 
-
-    Cart testCart = new Cart();
+    //@Autowired
+    Cart testCart = new Cart()
+            ;
 
     private final Map<ProductBrief, Integer> sampleMap = new HashMap<>();
 
     @BeforeAll
-    private void  populateMap() {
+    public void populateSampleMap() {
         sampleMap.put(justPencil().get(), 2);
         sampleMap.put(colourPencil().get(), 1);
         sampleMap.put(pen().get(),1);
@@ -45,6 +48,7 @@ class CartTest {
 
     @Test
     void getCartTotalPrice() {
+        Assertions.assertEquals(testCart.getCartTotalPrice(), 13);
     }
 
     @Test
@@ -53,31 +57,29 @@ class CartTest {
         Mockito.when(mockRepo.findById(1L)).thenReturn(justPencil());
         Mockito.when(mockRepo.findById(2L)).thenReturn(pen());
         Mockito.when(mockRepo.findById(3L)).thenReturn(colourPencil());
-//        Optional<ProductBrief> pencilOptional = mockRepo.findById(1L);
-//        Optional<ProductBrief> penOptional = mockRepo.findById(2L);
-//        Optional<ProductBrief> colourPenOptional = mockRepo.findById(3L);
         testCart.addProduct(mockRepo.findById(1L).get());
         testCart.addProduct(mockRepo.findById(1L).get());
         testCart.addProduct(mockRepo.findById(2L).get());
         testCart.addProduct(mockRepo.findById(3L).get());
 
-
-
         MapDifference<ProductBrief, Integer> mapDifference = Maps.difference(sampleMap, testCart.getProductBriefQuantityMap());
-
         Assertions.assertTrue(mapDifference.areEqual());
     }
 
-
-
-
-
     @Test
     void removeProduct() {
+        testCart.removeProduct(justPencil().get());
+        sampleMap.put(justPencil().get(), 1);
+        MapDifference<ProductBrief, Integer> mapDifference = Maps.difference(sampleMap, testCart.getProductBriefQuantityMap());
+        Assertions.assertTrue(mapDifference.areEqual());
+
     }
 
     @Test
     void xlearCart() {
+        testCart.clearCart();
+        Assertions.assertEquals(testCart.getCartTotalPrice(), 0);
+        Assertions.assertEquals(testCart.getProductBriefQuantityMap(), Collections.EMPTY_MAP);
     }
 
     private Optional<ProductBrief> justPencil() {
@@ -103,8 +105,5 @@ class CartTest {
         pen.setPrice(5);
         return Optional.of(pen);
     }
-
-
-
 
 }

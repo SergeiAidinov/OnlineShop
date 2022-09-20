@@ -36,19 +36,10 @@ public class Cart {
 
     }
 
-    public void removeProduct(Long id) {
+    public void removeProduct(ProductBrief productBriefToBeDeleted) {
 
-        AtomicReference<ProductBrief> productBriefToBeDeletedAtomicReference = new AtomicReference<>();
+        if (Objects.nonNull(productBriefQuantityMap.get(productBriefToBeDeleted))) {
 
-        productBriefQuantityMap
-                .forEach((productBrief, quality) -> {
-                    if (productBrief.getId().equals(id)) {
-                        productBriefToBeDeletedAtomicReference.set(productBrief);
-                    }
-                });
-
-        if (Objects.nonNull(productBriefToBeDeletedAtomicReference.get())) {
-            ProductBrief productBriefToBeDeleted = productBriefToBeDeletedAtomicReference.get();
 
             if (productBriefQuantityMap.get(productBriefToBeDeleted) == 1) {
                 productBriefQuantityMap.remove(productBriefToBeDeleted);
