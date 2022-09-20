@@ -3,8 +3,12 @@ package ru.yandex.incoming34.test;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import liquibase.repackaged.org.apache.commons.collections4.CollectionUtils;
+import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +27,21 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Component
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CartTest {
 
 
     Cart testCart = new Cart();
 
     private final Map<ProductBrief, Integer> sampleMap = new HashMap<>();
+
+    @BeforeAll
+    private void  populateMap() {
+        sampleMap.put(justPencil().get(), 2);
+        sampleMap.put(colourPencil().get(), 1);
+        sampleMap.put(pen().get(),1);
+    }
 
     @Test
     void getCartTotalPrice() {
@@ -40,17 +53,15 @@ class CartTest {
         Mockito.when(mockRepo.findById(1L)).thenReturn(justPencil());
         Mockito.when(mockRepo.findById(2L)).thenReturn(pen());
         Mockito.when(mockRepo.findById(3L)).thenReturn(colourPencil());
-        Optional<ProductBrief> pencilOptional = mockRepo.findById(1L);
-        Optional<ProductBrief> penOptional = mockRepo.findById(2L);
-        Optional<ProductBrief> colourPenOptional = mockRepo.findById(3L);
-        testCart.addProduct(pencilOptional.get());
-        testCart.addProduct(pencilOptional.get());
-        testCart.addProduct(colourPenOptional.get());
-        testCart.addProduct(penOptional.get());
+//        Optional<ProductBrief> pencilOptional = mockRepo.findById(1L);
+//        Optional<ProductBrief> penOptional = mockRepo.findById(2L);
+//        Optional<ProductBrief> colourPenOptional = mockRepo.findById(3L);
+        testCart.addProduct(mockRepo.findById(1L).get());
+        testCart.addProduct(mockRepo.findById(1L).get());
+        testCart.addProduct(mockRepo.findById(2L).get());
+        testCart.addProduct(mockRepo.findById(3L).get());
 
-        sampleMap.put(pencilOptional.get(), 2);
-        sampleMap.put(colourPenOptional.get(), 1);
-        sampleMap.put(penOptional.get(),1);
+
 
         MapDifference<ProductBrief, Integer> mapDifference = Maps.difference(sampleMap, testCart.getProductBriefQuantityMap());
 
@@ -66,7 +77,7 @@ class CartTest {
     }
 
     @Test
-    void clearCart() {
+    void xlearCart() {
     }
 
     private Optional<ProductBrief> justPencil() {
