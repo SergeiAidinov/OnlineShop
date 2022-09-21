@@ -2,11 +2,9 @@ package ru.yandex.incoming34.test;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import org.junit.AfterClass;
 import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +28,8 @@ import java.util.Optional;
 //@SpringBootTest
 @ComponentScan(basePackageClasses = {Cart.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CartTest {
 
     //@Autowired
@@ -47,11 +46,13 @@ public class CartTest {
     }
 
     @Test
-    void getCartTotalPrice() {
+    @Order(2)
+    void getCartTotalPriceTest() {
         Assertions.assertEquals(testCart.getCartTotalPrice(), 13);
     }
 
     @Test
+    @Order(1)
     void addProductTest() {
         ProductBriefRepo mockRepo = Mockito.mock(ProductBriefRepo.class);
         Mockito.when(mockRepo.findById(1L)).thenReturn(justPencil());
@@ -67,7 +68,8 @@ public class CartTest {
     }
 
     @Test
-    void removeProduct() {
+    @Order(3)
+    void removeProductTest() {
         testCart.removeProduct(justPencil().get());
         sampleMap.put(justPencil().get(), 1);
         MapDifference<ProductBrief, Integer> mapDifference = Maps.difference(sampleMap, testCart.getProductBriefQuantityMap());
@@ -76,7 +78,8 @@ public class CartTest {
     }
 
     @Test
-    void xlearCart() {
+    @Order(4)
+    void clearCartTest() {
         testCart.clearCart();
         Assertions.assertEquals(testCart.getCartTotalPrice(), 0);
         Assertions.assertEquals(testCart.getProductBriefQuantityMap(), Collections.EMPTY_MAP);
