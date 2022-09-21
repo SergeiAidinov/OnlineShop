@@ -2,16 +2,8 @@ package ru.yandex.incoming34.test;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import org.junit.AfterClass;
-import org.junit.FixMethodOrder;
 import org.junit.jupiter.api.*;
-import org.junit.runners.MethodSorters;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import ru.yandex.incoming34.components.Cart;
 import ru.yandex.incoming34.entities.product.ProductBrief;
@@ -23,26 +15,18 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-//@Configuration
-//@PropertySource(value = "classpath:SpringHomeWork3.properties")
-//@SpringBootTest
-@ComponentScan(basePackageClasses = {Cart.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class CartTest {
 
-    //@Autowired
-    Cart testCart = new Cart()
-            ;
-
     private final Map<ProductBrief, Integer> sampleMap = new HashMap<>();
+    Cart testCart = new Cart();
 
     @BeforeAll
     public void populateSampleMap() {
         sampleMap.put(justPencil().get(), 2);
         sampleMap.put(colourPencil().get(), 1);
-        sampleMap.put(pen().get(),1);
+        sampleMap.put(pen().get(), 1);
     }
 
     @Test
@@ -86,7 +70,7 @@ public class CartTest {
     }
 
     private Optional<ProductBrief> justPencil() {
-        ProductBrief pencil =  new ProductBrief();
+        ProductBrief pencil = new ProductBrief();
         pencil.setId(1L);
         pencil.setName("Простой карандаш");
         pencil.setPrice(2);
@@ -94,7 +78,7 @@ public class CartTest {
     }
 
     private Optional<ProductBrief> colourPencil() {
-        ProductBrief colourPencil =  new ProductBrief();
+        ProductBrief colourPencil = new ProductBrief();
         colourPencil.setId(3L);
         colourPencil.setName("Цветной карандаш");
         colourPencil.setPrice(4);
@@ -102,7 +86,7 @@ public class CartTest {
     }
 
     private Optional<ProductBrief> pen() {
-        ProductBrief pen =  new ProductBrief();
+        ProductBrief pen = new ProductBrief();
         pen.setId(2L);
         pen.setName("Ручка");
         pen.setPrice(5);
