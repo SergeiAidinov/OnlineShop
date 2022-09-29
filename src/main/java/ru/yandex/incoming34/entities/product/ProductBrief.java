@@ -1,5 +1,8 @@
 package ru.yandex.incoming34.entities.product;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -12,6 +15,11 @@ public class ProductBrief {
     @Column(name = "product_id")
     private Long id;
 
+    @Column(name = "product_name")
+    private String name;
+
+    @Column(name = "price")
+    private Integer price;
 
     public Long getId() {
         return id;
@@ -20,12 +28,6 @@ public class ProductBrief {
     public void setId(Long id) {
         this.id = id;
     }
-
-    @Column(name = "product_name")
-    private String name;
-
-    @Column(name = "price")
-    private Integer price;
 
     public String getName() {
         return name;
