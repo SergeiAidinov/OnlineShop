@@ -35,8 +35,10 @@ public class CategoryController {
         return categoryBriefList;
     }
 
+    //@Secured("ROLE_ADMIN")
     @PostMapping("category")
     public void createCategory(CategoryBriefDto categoryBriefDto){
+
         categoryService.createCategory(categoryBriefDto);
     }
 
@@ -49,5 +51,7 @@ public class CategoryController {
     public void refreshCategory(Long categoryId, CategoryBriefDto categoryBriefDto){
         categoryService.refreshCategory(categoryId, categoryBriefDto);
     }
+
+
 
 }

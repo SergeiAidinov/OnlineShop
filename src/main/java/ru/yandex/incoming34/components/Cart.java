@@ -1,14 +1,10 @@
 package ru.yandex.incoming34.components;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.yandex.incoming34.entities.product.ProductBrief;
-import ru.yandex.incoming34.repo.ProductBriefRepo;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -17,12 +13,6 @@ public class Cart {
 
     private Integer cartTotalPrice = 0;
     private final Map<ProductBrief, Integer> productBriefQuantityMap = new HashMap<>();
-    private final ProductBriefRepo productBriefRepo;
-
-    @Autowired
-    public Cart(ProductBriefRepo productBriefRepo) {
-        this.productBriefRepo = productBriefRepo;
-    }
 
     public Integer getCartTotalPrice() {
         return cartTotalPrice;
@@ -32,33 +22,24 @@ public class Cart {
         return productBriefQuantityMap;
     }
 
-    public void addProduct(Long id) {
-        Optional<ProductBrief> productBriefOptional = productBriefRepo.findById(id);
-        if (productBriefOptional.isPresent()) {
-            if (productBriefQuantityMap.containsKey(productBriefOptional.get())) {
-                Integer newQuantity = productBriefQuantityMap.get(productBriefOptional.get()) + 1;
-                productBriefQuantityMap.put(productBriefOptional.get(), newQuantity);
-            } else {
-                productBriefQuantityMap.put(productBriefOptional.get(), 1);
-            }
-            cartTotalPrice = calculateCartTotalCartPrice();
+    public void addProduct(ProductBrief productBrief) {
+
+        if (productBriefQuantityMap.containsKey(productBrief)) {
+            Integer newQuantity = productBriefQuantityMap.get(productBrief) + 1;
+            productBriefQuantityMap.put(productBrief, newQuantity);
+        } else {
+            productBriefQuantityMap.put(productBrief, 1);
         }
+
+            cartTotalPrice = calculateCartTotalCartPrice();
+
 
     }
 
-    public void removeProduct(Long id) {
+    public void removeProduct(ProductBrief productBriefToBeDeleted) {
 
-        AtomicReference<ProductBrief> productBriefToBeDeletedAtomicReference = new AtomicReference<>();
+        if (Objects.nonNull(productBriefQuantityMap.get(productBriefToBeDeleted))) {
 
-        productBriefQuantityMap
-                .forEach((productBrief, quality) -> {
-                    if (productBrief.getId().equals(id)) {
-                        productBriefToBeDeletedAtomicReference.set(productBrief);
-                    }
-                });
-
-        if (Objects.nonNull(productBriefToBeDeletedAtomicReference.get())) {
-            ProductBrief productBriefToBeDeleted = productBriefToBeDeletedAtomicReference.get();
 
             if (productBriefQuantityMap.get(productBriefToBeDeleted) == 1) {
                 productBriefQuantityMap.remove(productBriefToBeDeleted);
