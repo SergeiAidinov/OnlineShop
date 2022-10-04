@@ -48,9 +48,8 @@ public class CategoryService {
         return (List<CategoryBrief>) categoryBriefRepo.findAllById(categoriesNumberList);
     }
 
-    public void refreshCategory(Long categoryId, CategoryBriefDto categoryBriefDto) {
-        //CategoryBrief categoryBrief = convertor.convertCategoryBriefDtoToCategoryBrief(categoryBriefDto);
-        categoryBriefRepo.updateCategory(categoryBriefDto.getCatergoryName(), categoryId);
+    public void refreshCategory(Long categoryId, String newCategoryName) {
+        categoryBriefRepo.updateCategory(newCategoryName, categoryId);
     }
 }
 

@@ -1,7 +1,7 @@
 package ru.yandex.incoming34.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +13,8 @@ import ru.yandex.incoming34.service.ProductService;
 
 import java.util.List;
 
-@Api
+@Tag(name = "Контроллер товаров",
+		description = "Позволяет создавать, редактировать и удалять товары, а также привязывать их к категориям")
 @RestController
 @RequestMapping("/api/v1/product")
 public class ProductController {
@@ -26,36 +27,42 @@ public class ProductController {
 	}
 
 	@GetMapping("/all_brief_products")
+	@ApiOperation(value = "Показывает все товары без категорий")
 	public List<ProductBriefDto> showProducts() {
 				return productService.showAllBriefProducts();
 	}
 
 	@GetMapping("/all_products_with_categories")
+	@ApiOperation(value = "Показывает все товары с категориями")
 	public List<ProductFullDto> showProductsWithCategories() {
 		return productService.showAllProductsWithCategories();
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteProduct(@RequestParam Long id) {
+	@ApiOperation(value = "Удаляет продукт по его идентификатору")
+	public void deleteProduct(@PathVariable Long id) {
 
 		productService.removeProductById(id);
 	}
 
 	@PostMapping()
+	@ApiOperation(value = "Форма для создания нового продукта")
 	public HttpStatus putProduct(@RequestBody NewProductDto newProductDto) {
 		productService.putProduct(newProductDto);
 		return HttpStatus.OK;
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<ProductFullDto> getProduct(@RequestParam Long id) {
+	@ApiOperation(value = "Получение продукта по его идентификатору")
+	public ResponseEntity<ProductFullDto> getProduct(@PathVariable Long id) {
 		return productService.getProductFullById(id)
 				.map(productFullDto -> new ResponseEntity<>(productFullDto, HttpStatus.OK))
 				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NO_CONTENT));
 	}
 
 	@PutMapping("/{id}")
-	public void modifyProduct(Long id, NewProductDto newProductDto){
+	@ApiOperation(value = "Изменение продукта")
+	public void modifyProduct(@PathVariable Long id, @RequestBody NewProductDto newProductDto){
 		productService.modifyProduct(id, newProductDto);
 	}
 
