@@ -1,5 +1,7 @@
 package ru.yandex.incoming34.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.incoming34.dto.CategoryBriefDto;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/category")
+@Tag(name = "Контроллер категорий товаров", description = "Позволяет управлять категориями товаров")
 public class CategoryController {
 
     private final CategoryService categoryService;
@@ -22,6 +25,10 @@ public class CategoryController {
     }
 
     @GetMapping("/all_categories_with__goods")
+    @Operation(
+            summary = "Список категорий с товарами",
+            description = "Позволяет получить все категории и товары, относящиеся к каждой категории"
+    )
     public List<CategoryFull> getAllCategories() {
         List<CategoryFull> categoryFullList = new ArrayList<>();
         categoryService.getAllCategories().forEach(categoryFullList::add);
@@ -29,29 +36,46 @@ public class CategoryController {
     }
 
     @GetMapping("/all-brief-categories")
+    @Operation(
+            summary = "Список категорий без товаров",
+            description = "Позволяет получить все категории"
+    )
     public List<CategoryBrief> getAllBriefCategories() {
         List<CategoryBrief> categoryBriefList = new ArrayList<>();
         categoryService.getAllBriefCategories().forEach(categoryBriefList::add);
         return categoryBriefList;
     }
 
-    //@Secured("ROLE_ADMIN")
     @PostMapping("category")
-    public void createCategory(CategoryBriefDto categoryBriefDto){
+    @Operation(
+            summary = "Создание категории",
+            description = "Позволяет создать новую категорию"
+    )
+    public void createCategory(@RequestBody CategoryBriefDto categoryBriefDto) {
 
         categoryService.createCategory(categoryBriefDto);
     }
 
     @DeleteMapping("category")
-    public void removeCategory(Long id){
+    @Operation(
+            summary = "Удаление категории",
+            description = "Позволяет удалить категорию"
+    )
+    public void removeCategory(@RequestParam(name = "ID удаляемой категории", defaultValue = "3") Long id) {
         categoryService.removeCategory(id);
     }
 
     @PutMapping("category")
-    public void refreshCategory(Long categoryId, CategoryBriefDto categoryBriefDto){
-        categoryService.refreshCategory(categoryId, categoryBriefDto);
+    @Operation(
+            summary = "Переименование категории",
+            description = "Позволяет переименовать категорию"
+    )
+    public void refreshCategory(
+            @RequestParam(name = "ID категории", defaultValue = "1") Long categoryId,
+            @RequestParam(name = "Новое наименование категории", defaultValue = "Принадлежности для письма") String newCategoryName
+    ) {
+        categoryService.refreshCategory(categoryId, newCategoryName);
     }
-
 
 
 }
